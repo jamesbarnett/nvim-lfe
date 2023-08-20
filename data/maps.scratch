@@ -1,0 +1,12 @@
+filter/2            filtermap/2         find/2
+fold/3              foreach/2           from_keys/2
+from_list/1         get/2               get/3
+groups_from_list/2  groups_from_list/3  intersect/2
+intersect_with/3    is_key/2            iterator/1
+keys/1              map/2               merge/2
+merge_with/3        module_info/0       module_info/1
+new/0               next/1              put/3
+remove/2            size/1              take/2
+to_list/1           update/3            update_with/3
+update_with/4       values/1            with/2
+without/2

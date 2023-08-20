@@ -1,0 +1,6 @@
+append/3          append_list/3     erase/2           fetch/2
+fetch_keys/1      filter/2          find/2            fold/3
+from_list/1       is_empty/1        is_key/2          map/2
+merge/3           module_info/0     module_info/1     new/0
+size/1            store/3           take/2            to_list/1
+update/3          update/4          update_counter/3

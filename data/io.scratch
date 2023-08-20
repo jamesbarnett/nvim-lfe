@@ -1,0 +1,14 @@
+columns/0          columns/1          format/1           format/2
+format/3           fread/2            fread/3            fwrite/1
+fwrite/2           fwrite/3           get_chars/2        get_chars/3
+get_line/1         get_line/2         get_password/0     get_password/1
+getopts/0          getopts/1          module_info/0      module_info/1
+nl/0               nl/1               parse_erl_exprs/1  parse_erl_exprs/2
+parse_erl_exprs/3  parse_erl_exprs/4  parse_erl_form/1   parse_erl_form/2
+parse_erl_form/3   parse_erl_form/4   printable_range/0  put_chars/1
+put_chars/2        read/1             read/2             read/3
+read/4             request/1          request/2          requests/1
+requests/2         rows/0             rows/1             scan_erl_exprs/1
+scan_erl_exprs/2   scan_erl_exprs/3   scan_erl_exprs/4   scan_erl_form/1
+scan_erl_form/2    scan_erl_form/3    scan_erl_form/4    setopts/1
+setopts/2          write/1            write/2
