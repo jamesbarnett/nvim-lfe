@@ -11,8 +11,13 @@ if exists("b:current_syntax")
   finish
 endif
 
+syntax clear
+
+let s:cpo = &cpo
+set cpo&vim
+
 " Highlight unmatched parens
-syntax match lfeError ,[]})],
+"syntax match lfeError ,[]})],
 
 if version < 800
   set iskeyword=33,35-39,42-58,60-90,94,95,97-122,126,_
@@ -25,6 +30,9 @@ else
   " expanded
   " syntax iskeyword !,#,$,%,&,',*,+,,,-,.,/,0-9,:,<,=,>,?,@,A-Z,_,a-z,~,^
 endif
+
+" syn match lfeParentheses "[^ '`\t\n()\[\]";]\+"
+" syn match lfeParentheses "[)\]]"
 
 " Forms in order of appearance at
 " http://docs.lfe-lang.org/reference/index.html
@@ -112,7 +120,7 @@ endif
 " (defmodule name ...)
 " (defrecord name ...)
 " (defstruct ...)
-syntax keyword lfeCoreForm module module* module+ require provide 
+syntax keyword lfeCoreForm module module* module+ require provide
 syntax keyword lfeCoreForm quote car cdr list tuple tref tset binary
 syntax keyword lfeCoreForm map map-size map-get map-set map-update map-remove
 syntax keyword lfeCoreForm lambda match-lambda function let let-function
@@ -179,7 +187,7 @@ else
   syn region lfeString start=/#<<\z(.*\)$/ end=/^\z1$/ fold
 endif
 
-syn match lfeError ,[]})],
+" syn match lfeError ,[]})],
 
 syntax cluster lfeTop  add=lfeError,lfeConstant,lfeString
 
@@ -260,32 +268,32 @@ syntax match lfeQuote "#\?['`]"
 
 " syntax quoting, unquoting and quasiquotation
 
-syn region lfeQuoted matchgroup=Delimiter start="['`]" end=![ \t()\[\]";]!me=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
-syn region lfeQuoted matchgroup=Delimiter start="['`](" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
-syn region lfeQuoted matchgroup=Delimiter start="['`]\?#(" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
-
-syn region lfeUnquote matchgroup=Delimiter start="#,"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start="#,@"rs=s+3 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start="#,("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start="#,@("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start="#,\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start="#,@\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=","rs=s+1 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",@"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",("rs=s+2 end=")"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",@("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",#("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",@#("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",\["rs=s+2 end="\]"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",@\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",#\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
-syn region lfeUnquote matchgroup=Delimiter start=",@#\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
-
-syntax match lfeUnquote "#,"
-syntax match lfeUnquote "#,@"
-syntax match lfeUnquote ","
-syntax match lfeUnquote ",@"
-
+" syn region lfeQuoted matchgroup=Delimiter start="['`]" end=![ \t()\[\]";]!me=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+" syn region lfeQuoted matchgroup=Delimiter start="['`](" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+" syn region lfeQuoted matchgroup=Delimiter start="['`]\?#(" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+"
+" syn region lfeUnquote matchgroup=Delimiter start="#,"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start="#,@"rs=s+3 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start="#,("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start="#,@("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start="#,\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start="#,@\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=","rs=s+1 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",@"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",("rs=s+2 end=")"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",@("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",#("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",@#("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",\["rs=s+2 end="\]"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",@\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",#\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+" syn region lfeUnquote matchgroup=Delimiter start=",@#\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
+"
+" syntax match lfeUnquote "#,"
+" syntax match lfeUnquote "#,@"
+" syntax match lfeUnquote ","
+" syntax match lfeUnquote ",@"
+"
 " Comments
 syntax match lfeSharpBang "\%^#![ /].*" display
 syntax match lfeComment /;.*$/ contains=lfeTodo,lfeNote,@Spell
@@ -319,8 +327,8 @@ highlight default link lfeContainedNumberError Error
 highlight default link lfeQuote SpecialChar
 highlight default link lfeUnquote SpecialChar
 
-highlight default link lfeDelimiter Delimiter
-highlight default link lfeParen Delimiter
+" highlight default link lfeDelimiter Delimiter
+" highlight default link lfeParen Delimiter
 highlight default link lfeConstant Constant
 
 highlight default link lfeLit Type
@@ -338,3 +346,5 @@ highlight default link lfeExtSyntax Type
 highlight default link lfeExtFunc PreProc
 
 let b:current_syntax = "lfe"
+let &cpo = s:cpo
+
