@@ -2,8 +2,8 @@
 " Language:             Racket
 " Maintainer:           D. Ben Knoble <ben.knoble+github@gmail.com>
 " Previous Maintainer:  Will Langstroth <will@langstroth.com>
-" URL:                  https://github.com/benknoble/vim-racket
-" Description:          Contains all of the keywords in #lang racket
+" URL:                  https://github.com/benknoble/vim-lfe
+" Description:          Contains all of the keywords in #lang lfe
 " Last Change: 2022 Aug 12
 
 " Initializing:
@@ -27,7 +27,7 @@ else
 endif
 
 " Forms in order of appearance at
-" http://docs.racket-lang.org/reference/index.html
+" http://docs.lfe-lang.org/reference/index.html
 "
 " Integers
 "   - Regular decimal notation (1234 -123 0)
@@ -52,88 +52,80 @@ endif
 "   name but are allowed as subsequent letters
 "   - Comments one line (;) and block #| |#
 "
-" (quote e)
-" (cons head tail)
-" (car e)
-" (cdr e)
-" (list e ... )
-" (tuple e ... )
-" (tref tuple index)
-" (tset tuple index val)
-" (binary seg ... )
-" (map key val ...)
-" (map-size map) (msiz m)
-" (map-get map key) (mref m k)
-" (map-set map key val ...) (mset m k v ...)
-" (map-update map key val ...) (mupd m k v ...)
-" (map-remove map key ...) (mrem m k k ...)
-" (lambda (arg ...) ...)
-" (match-lambda
-"   ((arg ... ) {{(when e ...)}} ...)           - Matches clauses
-"   ... )
-" (function func-name arity)                    - Function reference
-" (function mod-name func-name arity)
-" (let ((pat {{(when e ...)}} e)
-"       ...)
-"   ... )
-" (let-function ((name lambda|match-lambda)     - Local functions
-"                ... )
-"   ... )
-" (letrec-function ((name lambda|match-lambda)  - Local functions
-"                   ... )
-"   ... )
-" (let-macro ((name lambda-match-lambda)        - Local macros
+"   Basic Macro Forms
+"   (: mod func arg ... ) =>
+"         (call 'mod 'func arg ... )
+" (mod:func arg ... ) =>
+"         (call 'mod 'func arg ... )
+" (? {{timeout {{default}} }})
+" (++ ... )
+" (-- ... )
+" (list* ... )
+" (let* (... ) ... )
+" (flet ((name (arg ...) {{doc-string}} ...)
+"        ...)
+"   ...)
+" (flet* (...) ... )
+" (fletrec ((name (arg ...) {{doc-string}} ...)
+"           ...)
+"   ...)
+" (cond (test body ...)
+"       ...
+"       ((?= pat expr) ...)
+"       ...
+"       (else ...))
+" (andalso ... )
+" (orelse ... )
+" (fun func arity)
+" (fun mod func arity)
+" (lc (qual ...) expr)
+" (list-comp (qual ...) expr)
+" (bc (qual ...) bitstringexpr)
+" (binary-comp (qual ...) bitstringexpr)
+" (ets-ms ...)
+" (trace-ms ...)
+"
+" Common Lisp inspired macros
+"
+" (defun name (arg ...) {{doc-string}} ...)
+" (defun name
+"   {{doc-string}}
+"   ((argpat ...) ...)
+"   ...)
+" (defmacro name (arg ...) {{doc-string}} ...)
+" (defmacro name arg {{doc-string}} ...)
+" (defmacro name
+"   {{doc-string}}
+"   ((argpat ...) ...)
+"   ...)
+" (defsyntax name
+"   (pat exp)
+"   ...)
+" (macrolet ((name (arg ...) {{doc-string}} ...)
+"            ...)
+"   ...)
+" (syntaxlet ((name (pat exp) ...)
 "             ...)
 "   ...)
-" (progn ... )
-" (if test true-expr {{false-expr}})
-" (case e
-"   (pat {{(when e ...)}} ...)
-"   ... ))
-" (receive
-"   (pat {{(when e ...)}} ... )
-"   ...
-"   (after timeout ... ))
-" (catch ... )
-" (try
-"   e
-"   {{(case ((pat {{(when e ...)}} ... )
-"           ... ))}}
-"   {{(catch
-"      ((tuple type value stacktrace)|_ {{(when e ...)}}
-"                             - Must be tuple of length 3 or just _!
-"       ... )
-"      ... )}}
-"   {{(after ... )}})
-" (funcall func arg ... )
-" (call mod func arg ... )    - Call to Mod:Func(Arg, ... )
-"
-" (define-record name fields)
-" (record name field val ...)
-" (is-record record name)
-" (record-index name field)
-" (record-field record name field)
-" (record-update record name field val ...)
-"
-" (define-struct fields)
-" (struct mod-name field val ...)
-" (is-struct struct)
-" (is-struct struct name)
-" (struct-field struct name field)
-" (struct-update struct name field val ...)
-"
-" (define-module name meta-data attributes)
-" (extend-module meta-data attributes)
-"
-" (define-function name meta-data lambda|match-lambda)
-" (define-macro name meta-data lambda|match-lambda)
-"
-" (define-type type definition)
-" (define-opaque-type type definition)
-" (define-function-spec func spec)
-" "
-syntax keyword lfeSyntax defun defmacro defrecord defmodule ++
-syntax keyword lfeSyntax module module* module+ require provide quote
+" (prog1 ...)
+" (prog2 ...)
+" (defmodule name ...)
+" (defrecord name ...)
+" (defstruct ...)
+syntax keyword lfeCoreForm module module* module+ require provide 
+syntax keyword lfeCoreForm quote car cdr list tuple tref tset binary
+syntax keyword lfeCoreForm map map-size map-get map-set map-update map-remove
+syntax keyword lfeCoreForm lambda match-lambda function let let-function
+syntax keyword lfeCoreForm letrec-function let-macro progn
+syntax keyword lfeCoreForm if case receive catch try after funcall call define-record
+syntax keyword lfeCoreForm is-record record-index record-fields struct is-struct
+syntax keyword lfeCoreForm struct-field struct-update define-module extend-module
+syntax keyword lfeCoreForm define-function define-macro define-type define-function-spec
+syntax keyword lfeCoreForm define-opaque-type
+syntax keyword lfeBasicMacro ? ++ -- list* flet flet* fletrec cond andalso orelse
+syntax keyword lfeBasicMacro fun lc list-comp bc binary-comp ets-ms trace-ms
+syntax keyword lfeClispMacro defmacro defsyntax macrolet syntaxlet prog1 prog2
+syntax keyword lfeClispMacro defmodule defrecord defstruct set
 syntax keyword lfeSyntax lists:all lists:any lists:append lists:append lists:concat
 syntax keyword lfeSyntax lists:delete lists:droplast lists:dropwhile lists:duplicate lists:enumerate
 syntax keyword lfeSyntax lists:enumerate lists:filter lists:filtermap lists:flatlength lists:flatmap
@@ -152,6 +144,11 @@ syntax keyword lfeSyntax lists:takewhile lists:ukeymerge lists:ukeysort lists:um
 syntax keyword lfeSyntax lists:umerge lists:umerge3 lists:uniq lists:uniq lists:unzip
 syntax keyword lfeSyntax lists:unzip3 lists:usort lists:usort lists:zf lists:zip
 syntax keyword lfeSyntax lists:zip3 lists:zipwith lists:zipwith3
+
+hi link lfeCoreForm Keyword
+hi link lfeBasicMacro Macro
+hi link lfeClispMacro Statement
+hi link lfeSyntax Statement
 
 " 10.3 Delayed Evaluation
 syntax keyword lfeFunc promise? delay lazy force promise-forced? promise-running?
@@ -182,6 +179,7 @@ else
   syn region lfeString start=/#<<\z(.*\)$/ end=/^\z1$/ fold
 endif
 
+syn match lfeError ,[]})],
 
 syntax cluster lfeTop  add=lfeError,lfeConstant,lfeString
 
@@ -259,6 +257,29 @@ syntax cluster lfeTop  add=lfeExtFunc,lfeExtSyntax
 
 " syntax quoting, unquoting and quasiquotation
 syntax match lfeQuote "#\?['`]"
+
+" syntax quoting, unquoting and quasiquotation
+
+syn region lfeQuoted matchgroup=Delimiter start="['`]" end=![ \t()\[\]";]!me=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+syn region lfeQuoted matchgroup=Delimiter start="['`](" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+syn region lfeQuoted matchgroup=Delimiter start="['`]\?#(" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+
+syn region lfeUnquote matchgroup=Delimiter start="#,"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,@"rs=s+3 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,@("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,@\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=","rs=s+1 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",("rs=s+2 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",#("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@#("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",\["rs=s+2 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",#\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@#\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
 
 syntax match lfeUnquote "#,"
 syntax match lfeUnquote "#,@"
