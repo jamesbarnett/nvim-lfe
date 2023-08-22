@@ -12,12 +12,13 @@ if exists("b:current_syntax")
 endif
 
 syntax clear
+syn case ignore
 
 let s:cpo = &cpo
 set cpo&vim
 
 " Highlight unmatched parens
-"syntax match lfeError ,[]})],
+syntax match lfeError ,[]})],
 
 if version < 800
   set iskeyword=33,35-39,42-58,60-90,94,95,97-122,126,_
@@ -34,205 +35,237 @@ endif
 " syn match lfeParentheses "[^ '`\t\n()\[\]";]\+"
 " syn match lfeParentheses "[)\]]"
 
-" Forms in order of appearance at
-" http://docs.lfe-lang.org/reference/index.html
 "
-" Integers
-"   - Regular decimal notation (1234 -123 0)
-"   - Binary Notation (#b0 #b10101 #b-1100)
-"   - Octal
-"   - Explicit Decimal
-"   - Hex
-"   - Explicit Base
-"   - Character Notation #\a #\$ #\e
-"   - Character hex #\x1f42d;
-"   - Floating Point
-"   - Strings
-"   - Binary Strings
-"   - Character escaping
-"   - Binaries #B(43 (42 (size 16)) (42 (size 32)))
-"   - Lists () (the empty list) (foo bar baz) etc.
-"   - Tuples #(value1 value2 ...) #() (empty tuple)
-"   - Maps #M(key1 value1 key2 value2 ... )
-"   - Structs #S(struct-name key1 value1 key2 value2 ... ) // No struct
-"   literals
-"   - Symbols (only | \' ' , # may not be the first character of the symbols
-"   name but are allowed as subsequent letters
-"   - Comments one line (;) and block #| |#
 "
-"   Basic Macro Forms
-"   (: mod func arg ... ) =>
-"         (call 'mod 'func arg ... )
-" (mod:func arg ... ) =>
-"         (call 'mod 'func arg ... )
-" (? {{timeout {{default}} }})
-" (++ ... )
-" (-- ... )
-" (list* ... )
-" (let* (... ) ... )
-" (flet ((name (arg ...) {{doc-string}} ...)
-"        ...)
-"   ...)
-" (flet* (...) ... )
-" (fletrec ((name (arg ...) {{doc-string}} ...)
-"           ...)
-"   ...)
-" (cond (test body ...)
-"       ...
-"       ((?= pat expr) ...)
-"       ...
-"       (else ...))
-" (andalso ... )
-" (orelse ... )
-" (fun func arity)
-" (fun mod func arity)
-" (lc (qual ...) expr)
-" (list-comp (qual ...) expr)
-" (bc (qual ...) bitstringexpr)
-" (binary-comp (qual ...) bitstringexpr)
-" (ets-ms ...)
-" (trace-ms ...)
 "
-" Common Lisp inspired macros
+" Furthermore, there is an include file which developers may which to utilize in their LFE programs: (include-lib "lfe/include/cl.lfe"). Currently this offers Common Lisp predicates, but may include other useful macros and functions in the future. The provided predicate macros wrap the various is_* Erlang functions; since these are expanded at compile time, they are usable in guards. The include the following:
 "
-" (defun name (arg ...) {{doc-string}} ...)
-" (defun name
-"   {{doc-string}}
-"   ((argpat ...) ...)
-"   ...)
-" (defmacro name (arg ...) {{doc-string}} ...)
-" (defmacro name arg {{doc-string}} ...)
-" (defmacro name
-"   {{doc-string}}
-"   ((argpat ...) ...)
-"   ...)
-" (defsyntax name
-"   (pat exp)
-"   ...)
-" (macrolet ((name (arg ...) {{doc-string}} ...)
-"            ...)
-"   ...)
-" (syntaxlet ((name (pat exp) ...)
-"             ...)
-"   ...)
-" (prog1 ...)
-" (prog2 ...)
-" (defmodule name ...)
-" (defrecord name ...)
-" (defstruct ...)
-syntax keyword lfeCoreForm module module* module+ require provide
-syntax keyword lfeCoreForm quote car cdr list tuple tref tset binary
-syntax keyword lfeCoreForm map map-size map-get map-set map-update map-remove
-syntax keyword lfeCoreForm lambda match-lambda function let let-function
-syntax keyword lfeCoreForm letrec-function let-macro progn
-syntax keyword lfeCoreForm if case receive catch try after funcall call define-record
-syntax keyword lfeCoreForm is-record record-index record-fields struct is-struct
-syntax keyword lfeCoreForm struct-field struct-update define-module extend-module
-syntax keyword lfeCoreForm define-function define-macro define-type define-function-spec
-syntax keyword lfeCoreForm define-opaque-type
-syntax keyword lfeBasicMacro ? ++ -- list* flet flet* fletrec cond andalso orelse
-syntax keyword lfeBasicMacro fun lc list-comp bc binary-comp ets-ms trace-ms
-syntax keyword lfeClispMacro defmacro defsyntax macrolet syntaxlet prog1 prog2
-syntax keyword lfeClispMacro defmodule defrecord defstruct set
-syntax keyword lfeSyntax lists:all lists:any lists:append lists:append lists:concat
-syntax keyword lfeSyntax lists:delete lists:droplast lists:dropwhile lists:duplicate lists:enumerate
-syntax keyword lfeSyntax lists:enumerate lists:filter lists:filtermap lists:flatlength lists:flatmap
-syntax keyword lfeSyntax lists:flatten lists:flatten lists:foldl lists:foldr lists:foreach
-syntax keyword lfeSyntax lists:join lists:keydelete lists:keyfind lists:keymap lists:keymember
-syntax keyword lfeSyntax lists:keymerge lists:keyreplace lists:keysearch lists:keysort lists:keystore
-syntax keyword lfeSyntax lists:keytake lists:last lists:map lists:mapfoldl lists:mapfoldr
-syntax keyword lfeSyntax lists:max lists:member lists:merge lists:merge lists:merge
-syntax keyword lfeSyntax lists:merge3 lists:min lists:module_info lists:module_info lists:nth
-syntax keyword lfeSyntax lists:nthtail lists:partition lists:prefix lists:reverse lists:reverse
-syntax keyword lfeSyntax lists:rkeymerge lists:rmerge lists:rmerge lists:rmerge3 lists:rukeymerge
-syntax keyword lfeSyntax lists:rumerge lists:rumerge lists:rumerge3 lists:search lists:seq
-syntax keyword lfeSyntax lists:seq lists:sort lists:sort lists:split lists:splitwith
-syntax keyword lfeSyntax lists:sublist lists:sublist lists:subtract lists:suffix lists:sum
-syntax keyword lfeSyntax lists:takewhile lists:ukeymerge lists:ukeysort lists:umerge lists:umerge
-syntax keyword lfeSyntax lists:umerge lists:umerge3 lists:uniq lists:uniq lists:unzip
-syntax keyword lfeSyntax lists:unzip3 lists:usort lists:usort lists:zf lists:zip
-syntax keyword lfeSyntax lists:zip3 lists:zipwith lists:zipwith3
+" (alivep x)
+" (atomp x)
+" (binaryp x)
+" (bitstringp x)
+" (boolp x) and (booleanp x)
+" (builtinp x)
+" (consp x)
+" (floatp x)
+" (funcp x) and (functionp x)
+" (intp x) and (integerp x)
+" (listp x)
+" (mapp x)
+" (numberp x)
+" (pidp x)
+" (process-alive-p x)
+" (recordp x tag)
+" (recordp x tag size)
+" (refp x) and (referencep x)
+" (tuplep x)
+" (vectorp x)
+"
+" Non-predicate macros in lfe/include/cl.lfe include:
+"
+" (dolist ...)
+" (vector ...)
+"
+" Supplemental Clojure Functions
+"
+" From LFE's earliest days, it's Lisp-cousin Clojure (created around the same time) has inspired LFE developers to create similar, BEAM-versions of those functions. These were collected in a separate library and then expanded upon, until eventually becoming part of the LFE standard library.
+"
+" Function definition macros:
+"
+" (clj:defn ...)
+" (clj:defn- ...)
+" (clj:fn ...)
+"
+" Threading macros:
+"
+"(clj:-> ...)
+" (clj:->> ...)
+" (clj:as-> ...)
+" (clj:cond-> ...)
+" (clj:cond->> ...)
+" (clj:some-> ...)
+" (clj:some->> ...)
+" (clj:doto ...)
+"
+" Conditional Macros
+"
+" (clj:if-let ...)
+" (clj:iff-let ...)
+" (clj:condp ...)
+" (clj:if-not ...)
+" (clj:iff-not ...)
+" (clj:when-not ...)
+" (clj:not= ...)
+"
+" Predicate macros:
+"
+" (clj:atom? x)
+" (clj:binary? x)
+" (clj:bitstring? x)
+" (clj:bool? x)
+" (clj:boolean? x)
+" (clj:even? x)
+" (clj:false? x)
+" (clj:falsy? x)
+" (clj:float? x)
+" (clj:func? x)
+" (clj:function? x)
+" (clj:identical? x)
+" (clj:int? x)
+" (clj:integer? x)
+" (clj:map? x)
+" (clj:neg? x)
+" (clj:nil? x)
+" (clj:number? x)
+" (clj:odd? x)
+" (clj:pos? x)
+" (clj:record? x)
+" (clj:reference? x)
+" (clj:true? x)
+" (clj:tuple? x)
+" (clj:undef? x)
+" (clj:undefined? x)
+" (clj:zero? x)
+"
+" Other:
+"
+" (clj:str x)
+" (clj:lazy-seq x)
+" (clj:conj ...)
+" (clj:if ...)
+syntax keyword lfeSyntax        module module* module+ require provide
+syntax keyword lfeSyntax        quote car cdr list tuple tref tset binary
+syntax keyword lfeSyntax        map map-size map-get map-set map-update map-remove
+syntax keyword lfeSyntax        lambda match-lambda function let let-function
+syntax keyword lfeSyntax        letrec-function let-macro progn
+syntax keyword lfeSyntax        if case receive catch try after funcall call define-record
+syntax keyword lfeSyntax        is-record record-index record-fields struct is-struct
+syntax keyword lfeSyntax        struct-field struct-update define-module extend-module
+syntax keyword lfeSyntax        define-function define-macro define-type define-function-spec
+syntax keyword lfeSyntax        define-opaque-type
+syntax keyword lfeSyntax        ? ++ -- list* flet flet* fletrec cond andalso orelse
+syntax keyword lfeSyntax        fun lc list-comp bc binary-comp ets-ms trace-ms
+syntax keyword lfeFunction      defmacro defsyntax macrolet syntaxlet prog1 prog2 when
+syntax keyword lfeSyntax        defmodule defrecord defstruct set defun
+syntax keyword lfeSyntax        mset msiz mref mupd binary record is-record record-field
+syntax keyword lfeSyntax        type-test guard-bif acons pairlis assoc assoc-if
+syntax keyword lfeSyntax        assoc-if-not rassoc rassoc-if rassoc-if-not
+syntax keyword lfeSyntax        subst subst-if subst-if-not sublis
+syntax keyword lfeSyntax        cl:make-lfe-bool cl:make-cl-bool cl:mapcar cl:maplist
+syntax keyword lfeSyntax        cl:mapc cl:mapl cl:symbol-plist cl:symbol-name cl:get cl:get cl:getl cl:putprop
+syntax keyword lfeSyntax        cl:remprop cl:getf cl:getf cl:putf cl:remf cl:get-properties
+syntax keyword lfeSyntax        cl:elt cl:length cl:reverse cl:some cl:every cl:notany cl:notevery cl:reduce
+syntax keyword lfeSyntax        cl:reduce cl:reduce cl:reduce cl:remove cl:remove-if cl:remove-if-not
+syntax keyword lfeSyntax        cl:remove-duplicates cl:find cl:find-if cl:find-if-not cl:find-duplicates
+syntax keyword lfeSyntax        cl:position cl:position-if cl:position-if-not cl:position-duplicates
+syntax keyword lfeSyntax        cl:count cl:count-if cl:count-if-not cl:count-duplicates
+syntax keyword lfeSyntax        cl:car cl:first cl:cdr cl:rest cl:nth cl:nthcdr
+syntax keyword lfeSyntax        cl:last cl:butlast cl:subst cl:subst-if cl:subst-if-not
+syntax keyword lfeSyntax        cl:sublis cl:member cl:member-if cl:member-if-not cl:adjoin cl:union
+syntax keyword lfeSyntax        cl:intersection cl:set-difference cl:set-exclusive-or cl:subsetp
+syntax keyword lfeSyntax        cl:acons cl:pairlis cl:pairlis cl:assoc cl:assoc-if cl:assoc-if-not
+syntax keyword lfeSyntax        cl:rassoc cl:rassoc-if cl:rassoc-if-not cl:type-of cl:coerce
+syntax keyword lfeSyntax        lists:all lists:any lists:append lists:append lists:concat
+syntax keyword lfeSyntax        lists:delete lists:droplast lists:dropwhile lists:duplicate lists:enumerate
+syntax keyword lfeSyntax        lists:enumerate lists:filter lists:filtermap lists:flatlength lists:flatmap
+syntax keyword lfeSyntax        lists:flatten lists:flatten lists:foldl lists:foldr lists:foreach
+syntax keyword lfeSyntax        lists:join lists:keydelete lists:keyfind lists:keymap lists:keymember
+syntax keyword lfeSyntax        lists:keymerge lists:keyreplace lists:keysearch lists:keysort lists:keystore
+syntax keyword lfeSyntax        lists:keytake lists:last lists:map lists:mapfoldl lists:mapfoldr
+syntax keyword lfeSyntax        lists:max lists:member lists:merge lists:merge lists:merge
+syntax keyword lfeSyntax        lists:merge3 lists:min lists:module_info lists:module_info lists:nth
+syntax keyword lfeSyntax        lists:nthtail lists:partition lists:prefix lists:reverse lists:reverse
+syntax keyword lfeSyntax        lists:rkeymerge lists:rmerge lists:rmerge lists:rmerge3 lists:rukeymerge
+syntax keyword lfeSyntax        lists:rumerge lists:rumerge lists:rumerge3 lists:search lists:seq
+syntax keyword lfeSyntax        lists:seq lists:sort lists:sort lists:split lists:splitwith
+syntax keyword lfeSyntax        lists:sublist lists:sublist lists:subtract lists:suffix lists:sum
+syntax keyword lfeSyntax        lists:takewhile lists:ukeymerge lists:ukeysort lists:umerge lists:umerge
+syntax keyword lfeSyntax        lists:umerge lists:umerge3 lists:uniq lists:uniq lists:unzip
+syntax keyword lfeSyntax        lists:unzip3 lists:usort lists:usort lists:zf lists:zip
+syntax keyword lfeSyntax        lists:zip3 lists:zipwith lists:zipwith3
 
-hi link lfeCoreForm Keyword
-hi link lfeBasicMacro Macro
-hi link lfeClispMacro Statement
-hi link lfeSyntax Statement
+syn match lfeDelimiter !\<\.\>!
 
-" 10.3 Delayed Evaluation
-syntax keyword lfeFunc promise? delay lazy force promise-forced? promise-running?
+syn match lfeSymbol    ,\k+,  contained
 
-" 10.3.1 Additional Promise Kinds
-syntax keyword lfeFunc delay/name promise/name delay/strict delay/sync delay/thread delay/idle
-syntax match lfeDelimiter !\<\.\>!
+syn cluster lfeNormal  contains=lfeSyntax,lfeFunc,lfeDelimiter
+syn cluster lfeQuotedStuff  contains=lfeSymbol
+syn cluster lfeQuotedOrNormal  contains=lfeDelimiter
 
-syntax cluster lfeTop contains=lfeSyntax,lfeFunc,lfeDelimiter
+syn match lfeConstant  ,\<\*\k\+\*\>,
+syn match lfeConstant  ,\<<\k\+>\>,
 
-syntax match lfeConstant  ,\<\*\k\+\*\>,
-syntax match lfeConstant  ,\<<\k\+>\>,
+syn region lfeQuotedStruc start="("rs=s+1 end=")"re=e-1     contains=@lfeQuotedStuff,@lfeQuotedOrNormal contained
+syn region lfeQuotedStruc start="#("rs=s+2 end=")"re=e-1    contains=@lfeQuotedStuff,@lfeQuotedOrNormal contained
+syn region lfeQuotedStruc start="{"rs=s+1 end="}"re=e-1   contains=@lfeQuotedStuff,@lfeQuotedOrNormal contained
+syn region lfeQuotedStruc start="#{"rs=s+2 end="}"re=e-1  contains=@lfeQuotedStuff,@lfeQuotedOrNormal contained
+syn region lfeQuotedStruc start="\["rs=s+1 end="\]"re=e-1   contains=@lfeQuotedStuff,@lfeQuotedOrNormal contained
+syn region lfeQuotedStruc start="#\["rs=s+2 end="\]"re=e-1  contains=@lfeQuotedStuff,@lfeQuotedOrNormal contained
 
-syntax match lfeStringEscapeError "\\." contained display
-syntax match lfeStringEscape "\\[abtnvfre'"\\]"        contained display
-syntax match lfeStringEscape "\\$"                     contained display
-syntax match lfeStringEscape "\\\o\{1,3}\|\\x\x\{1,2}" contained display
+syn cluster lfeQuotedStuff  add=lfeQuotedStruc
 
-syntax match lfeUStringEscape "\\u\x\{1,4}\|\\U\x\{1,8}" contained display
-syntax match lfeUStringEscape "\\u\x\{4}\\u\x\{4}"       contained display
+syn cluster lfeNormal  contains=lfeSyntax,lfeFunc,lfeDelimiter
+syn cluster lfeQuotedStuff  contains=lfeSymbol
+syn cluster lfeQuotedOrNormal  contains=lfeDelimiter
 
-syntax region lfeString start=/\%(\\\)\@<!"/ skip=/\\[\\"]/ end=/"/ contains=lfeStringEscapeError,lfeStringEscape,lfeUStringEscape
-syntax region lfeString start=/#"/           skip=/\\[\\"]/ end=/"/ contains=lfeStringEscapeError,lfeStringEscape
+" Non-quoted lists, and strings
+syn region lfeStruc matchgroup=Delimiter start="("rs=s+1 matchgroup=Delimiter end=")"re=e-1 contains=@lfeNormal
+syn region lfeStruc matchgroup=Delimiter start="#("rs=s+2 matchgroup=Delimiter end=")"re=e-1 contains=@lfeNormal
+syn region lfeStruc matchgroup=Delimiter start="{"rs=s+1 matchgroup=Delimiter end="}"re=e-1 contains=@lfeNormal
+syn region lfeStruc matchgroup=Delimiter start="#{"rs=s+2 matchgroup=Delimiter end="}"re=e-1 contains=@lfeNormal
+syn region lfeStruc matchgroup=Delimiter start="\["rs=s+1 matchgroup=Delimiter end="\]"re=e-1 contains=@lfeNormal
+syn region lfeStruc matchgroup=Delimiter start="#\["rs=s+2 matchgroup=Delimiter end="\]"re=e-1 contains=@lfeNormal
 
-if exists("lfe_no_string_fold")
-  syn region lfeString start=/#<<\z(.*\)$/ end=/^\z1$/
-else
-  syn region lfeString start=/#<<\z(.*\)$/ end=/^\z1$/ fold
-endif
+" Simple literals
+syn region lfeString start=/\%(\\\)\@<!"/ skip=/\\[\\"]/ end=/"/
+syn region lfeString start=/#<<\z(.*\)$/ end=/^\z1$/
 
-" syn match lfeError ,[]})],
-
-syntax cluster lfeTop  add=lfeError,lfeConstant,lfeString
+syn cluster lfeNormal  add=lfeError,lfeConstant,lfeStruc,lfeString
+syn cluster lfeQuotedOrNormal  add=lfeString
 
 " Numbers
 
 " anything which doesn't match the below rules, but starts with a #d, #b, #o,
 " #x, #i, or #e, is an error
-syntax match lfeNumberError         "\<#[xdobie]\k*"
+syn match lfeNumberError         "\<#[xdobie]\k*"
 
-syntax match lfeContainedNumberError   "\<#o\k*[^-+0-7delfinas#./@]\>"
-syntax match lfeContainedNumberError   "\<#b\k*[^-+01delfinas#./@]\>"
-syntax match lfeContainedNumberError   "\<#[ei]#[ei]"
-syntax match lfeContainedNumberError   "\<#[xdob]#[xdob]"
+syn match lfeContainedNumberError   "\<#o\k*[^-+0-7delfinas#./@]\>"
+syn match lfeContainedNumberError   "\<#b\k*[^-+01delfinas#./@]\>"
+syn match lfeContainedNumberError   "\<#[ei]#[ei]"
+syn match lfeContainedNumberError   "\<#[xdob]#[xdob]"
 
 " start with the simpler sorts
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\d\+/\d\+\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\d\+/\d\+[-+]\d\+\(/\d\+\)\?i\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\d\+/\d\+\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\d\+/\d\+[-+]\d\+\(/\d\+\)\?i\>" contains=lfeContainedNumberError
 
 " different possible ways of expressing complex values
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?i\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?[-+]\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?i\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f][-+]\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?i\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?[-+]\(inf\|nan\)\.[0f]i\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?@[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f]@[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?@[-+]\(inf\|nan\)\.[0f]\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?i\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?[-+]\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?i\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f][-+]\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?i\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?[-+]\(inf\|nan\)\.[0f]i\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?@[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f]@[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[dobie]\)\{0,2}[-+]\?\(\d\+\|\d\+#*\.\|\d*\.\d\+\)#*\(/\d\+#*\)\?\([sdlef][-+]\?\d\+#*\)\?@[-+]\(inf\|nan\)\.[0f]\>" contains=lfeContainedNumberError
 
 " hex versions of the above (separate because of the different possible exponent markers)
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\x\+/\x\+\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\x\+/\x\+[-+]\x\+\(/\x\+\)\?i\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\x\+/\x\+\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\x\+/\x\+[-+]\x\+\(/\x\+\)\?i\>"
 
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?i\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?[-+]\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?i\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\(inf\|nan\)\.[0f][-+]\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?i\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?[-+]\(inf\|nan\)\.[0f]i\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?@[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\(inf\|nan\)\.[0f]@[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?\>"
-syntax match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?@[-+]\(inf\|nan\)\.[0f]\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?i\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?[-+]\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?i\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\(inf\|nan\)\.[0f][-+]\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?i\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?[-+]\(inf\|nan\)\.[0f]i\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?@[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\(inf\|nan\)\.[0f]@[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?\>"
+syn match lfeNumber    "\<\(#x\|#[ei]#x\|#x#[ei]\)[-+]\?\(\x\+\|\x\+#*\.\|\x*\.\x\+\)#*\(/\x\+#*\)\?\([sl][-+]\?\x\+#*\)\?@[-+]\(inf\|nan\)\.[0f]\>"
 
 " these work for any radix
-syntax match lfeNumber    "\<\(#[xdobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f]i\?\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[xdobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f][-+]\(inf\|nan\)\.[0f]i\>" contains=lfeContainedNumberError
-syntax match lfeNumber    "\<\(#[xdobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f]@[-+]\(inf\|nan\)\.[0f]\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[xdobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f]i\?\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[xdobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f][-+]\(inf\|nan\)\.[0f]i\>" contains=lfeContainedNumberError
+syn match lfeNumber    "\<\(#[xdobie]\)\{0,2}[-+]\(inf\|nan\)\.[0f]@[-+]\(inf\|nan\)\.[0f]\>" contains=lfeContainedNumberError
+
 
 syntax keyword lfeBoolean  #t #f #true #false #T #F
 
@@ -253,7 +286,8 @@ syntax match lfeChar    "\<#\\\o\{1,3}\>"
 syntax match lfeChar    "\<#\\x\x\{1,2}\>"
 syntax match lfeChar    "\<#\\u\x\{1,6}\>"
 
-syntax cluster lfeTop  add=lfeNumber,lfeBoolean,lfeChar
+syn cluster lfeNormal  add=lfeNumber,lfeBoolean,lfeChar
+syn cluster lfeQuotedOrNormal  add=lfeNumber,lfeBoolean
 
 " Command-line parsing
 syntax keyword lfeExtFunc command-line current-command-line-arguments once-any help-labels multi once-each
@@ -261,89 +295,85 @@ syntax keyword lfeExtFunc command-line current-command-line-arguments once-any h
 syntax match lfeSyntax    "#lang "
 syntax match lfeExtSyntax "#:\k\+"
 
-syntax cluster lfeTop  add=lfeExtFunc,lfeExtSyntax
+syn cluster lfeNormal  add=lfeExtFunc,lfeExtSyntax
 
 " syntax quoting, unquoting and quasiquotation
-syntax match lfeQuote "#\?['`]"
+syn region lfeQuoted matchgroup=Delimiter start="['`]" end=![ \t()\[\]";]!me=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+syn region lfeQuoted matchgroup=Delimiter start="['`](" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+syn region lfeQuoted matchgroup=Delimiter start="['`]\?#(" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
 
-" syntax quoting, unquoting and quasiquotation
+syn region lfeUnquote matchgroup=Delimiter start="#,"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,@"rs=s+3 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,@("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start="#,@\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=","rs=s+1 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",("rs=s+2 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",#("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@#("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",\["rs=s+2 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",#\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
+syn region lfeUnquote matchgroup=Delimiter start=",@#\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
 
-" syn region lfeQuoted matchgroup=Delimiter start="['`]" end=![ \t()\[\]";]!me=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
-" syn region lfeQuoted matchgroup=Delimiter start="['`](" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
-" syn region lfeQuoted matchgroup=Delimiter start="['`]\?#(" matchgroup=Delimiter end=")" contains=@lfeQuotedStuff,@lfeQuotedOrNormal
-"
-" syn region lfeUnquote matchgroup=Delimiter start="#,"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start="#,@"rs=s+3 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start="#,("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start="#,@("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start="#,\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start="#,@\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=","rs=s+1 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",@"rs=s+2 end=![ \t\[\]()";]!re=e-1,me=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",("rs=s+2 end=")"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",@("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",#("rs=s+3 end=")"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",@#("rs=s+4 end=")"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",\["rs=s+2 end="\]"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",@\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",#\["rs=s+3 end="\]"re=e-1 contained contains=@lfeNormal
-" syn region lfeUnquote matchgroup=Delimiter start=",@#\["rs=s+4 end="\]"re=e-1 contained contains=@lfeNormal
-"
-" syntax match lfeUnquote "#,"
-" syntax match lfeUnquote "#,@"
-" syntax match lfeUnquote ","
-" syntax match lfeUnquote ",@"
-"
+syn cluster lfeQuotedStuff add=lfeUnquote
+
+syn region lfeQuoted matchgroup=Delimiter start="#['`]"rs=s+2 end=![ \t()\[\]";]!re=e-1,me=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+syn region lfeQuoted matchgroup=Delimiter start="#['`]("rs=s+3 matchgroup=Delimiter end=")"re=e-1 contains=@lfeQuotedStuff,@lfeQuotedOrNormal
+
 " Comments
-syntax match lfeSharpBang "\%^#![ /].*" display
-syntax match lfeComment /;.*$/ contains=lfeTodo,lfeNote,@Spell
-syntax region lfeMultilineComment start=/#|/ end=/|#/ contains=lfeMultilineComment,lfeTodo,lfeNote,@Spell
-syntax match lfeFormComment "#;" nextgroup=@lfeTop
+syn match lfeComment /;.*$/ contains=lfeTodo,lfeNote,@Spell
+syn region lfeMultilineComment start=/#|/ end=/|#/ contains=lfeMultilineComment,lfeTodo,lfeNote,@Spell
 
-syntax match lfeTodo /\C\<\(FIXME\|TODO\|XXX\)\ze:\?\>/ contained
+syn keyword lfeTodo FIXME TODO XXX contained
 syntax match lfeNote /\CNOTE\ze:\?/ contained
 
-syntax cluster lfeTop  add=lfeQuote,lfeUnquote,lfeComment,lfeMultilineComment,lfeFormComment
+syn cluster lfeNormal  add=lfeQuoted,lfeComment,lfeMultilineComment
+syn cluster lfeQuotedOrNormal  add=lfeComment,lfeMultilineComment
 
 " Synchronization and the wrapping up...
 syntax sync match matchPlace grouphere NONE "^[^ \t]"
 " ... i.e. synchronize on a line that starts at the left margin
 
-" Define the default highlighting.
-highlight default link lfeSyntax Statement
-highlight default link lfeFunc Function
+if version >= 508 || !exists("did_lfe_syntax_inits")
+  if version < 508
+    let did_lfe_syntax_inits = 1
+    command -nargs=+ HiLink hi link <args>
+  else
+    command -nargs=+ HiLink hi def link <args>
+  endif
 
-highlight default link lfeString String
-highlight default link lfeStringEscape Special
-highlight default link lfeUStringEscape Special
-highlight default link lfeStringEscapeError Error
-highlight default link lfeChar Character
-highlight default link lfeBoolean Boolean
+  HiLink lfeSyntax             Statement
+  HiLink lfeFunc               Function
 
-highlight default link lfeNumber Number
-highlight default link lfeNumberError Error
-highlight default link lfeContainedNumberError Error
+  HiLink lfeString             String
+  HiLink lfeChar               Character
+  HiLink lfeBoolean            Boolean
 
-highlight default link lfeQuote SpecialChar
-highlight default link lfeUnquote SpecialChar
+  HiLink lfeNumber             Number
+  HiLink lfeNumberError        Error
+  HiLink lfeContainedNumberError Error
 
-" highlight default link lfeDelimiter Delimiter
-" highlight default link lfeParen Delimiter
-highlight default link lfeConstant Constant
+  HiLink lfeQuoted             Structure
+  HiLink lfeQuotedStruc        Structure
+  HiLink lfeSymbol             Structure
 
-highlight default link lfeLit Type
-highlight default link lfeRe Type
+  HiLink lfeDelimiter          Delimiter
+  HiLink lfeConstant           Constant
 
-highlight default link lfeComment Comment
-highlight default link lfeMultilineComment Comment
-highlight default link lfeFormComment SpecialChar
-highlight default link lfeSharpBang Comment
-highlight default link lfeTodo Todo
-highlight default link lfeNote SpecialComment
-highlight default link lfeError Error
+  HiLink lfeComment            Comment
+  HiLink lfeMultilineComment   Comment
+  HiLink lfeTodo               Todo
+  HiLink lfeNote               SpecialComment
+  HiLink lfeError              Error
 
-highlight default link lfeExtSyntax Type
-highlight default link lfeExtFunc PreProc
+  HiLink lfeExtSyntax          Type
+  HiLink lfeExtFunc            PreProc
+  delcommand HiLink
+endif
 
 let b:current_syntax = "lfe"
 let &cpo = s:cpo
